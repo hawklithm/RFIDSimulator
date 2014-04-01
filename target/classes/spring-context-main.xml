@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName" default-lazy-init="false">
+  	<bean id="wardenManager" class="com.multiagent.hawklithm.shadowsong.manager.WardenManager"/>
+  	<bean id="nettyHandler" class="com.hawklithm.bluehawky.netty.ReaderNettyHandler"/>
+  	<bean id="nettyClient" class="com.hawklithm.bluehawky.client.NettyClient">
+	  	<constructor-arg value="3274"/>
+		<constructor-arg value="127.0.0.1"/>
+		<constructor-arg ref="nettyHandler"/>
+  	</bean>
+  	<bean id="gateReader" class="com.hawklithm.bluehawky.sim.reader.DataGeneratorSimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="101"/>
+  		<property name="readerName" value="gateReader1"/>
+  		<property name="dataTargetName" value="gate" />
+  		<property name="readerTargetName" value="sortingReader1|sortingReader2" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_GATE_OVER}"/>
+  	</bean>
+   	<bean id="sortingReader1" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="1026"/>
+  		<property name="readerName" value="sortingReader1"/>
+  		<property name="dataTargetName" value="1026" />
+  		<property name="readerTargetName" value="cleanAndDisinfectReader1" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SORTTING_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_GATE_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="sortingReader2" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="1126"/>
+  		<property name="readerName" value="sortingReader2"/>
+  		<property name="dataTargetName" value="1126" />
+  		<property name="readerTargetName" value="cleanAndDisinfectReader2" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SORTTING_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_GATE_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="cleanAndDisinfectReader1" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="2026"/>
+  		<property name="readerName" value="cleanAndDisinfectReader1"/>
+  		<property name="readerTargetName" value="packageReader1" />
+  		<property name="dataTargetName" value="2026" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_CLEANANDDISINFECT_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SORTTING_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="cleanAndDisinfectReader2" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="2126"/>
+  		<property name="readerName" value="cleanAndDisinfectReader2"/>
+  		<property name="readerTargetName" value="packageReader2" />
+  		<property name="dataTargetName" value="2126" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_CLEANANDDISINFECT_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SORTTING_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="packageReader1" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="3026"/>
+  		<property name="readerName" value="packageReader1"/>
+  		<property name="readerTargetName" value="secondaryDisinfectReader1" />
+  		<property name="dataTargetName" value="3026" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_PACKAGING_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_CLEANANDDISINFECT_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="packageReader2" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="3126"/>
+  		<property name="readerName" value="packageReader2"/>
+  		<property name="readerTargetName" value="secondaryDisinfectReader2" />
+  		<property name="dataTargetName" value="3126" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_PACKAGING_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_CLEANANDDISINFECT_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="secondaryDisinfectReader1" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="4026"/>
+  		<property name="readerName" value="secondaryDisinfectReader1"/>
+  		<property name="readerTargetName" value="sterilestorageReader1" />
+  		<property name="dataTargetName" value="4026" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SECONDARYDISINFECT_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_PACKAGING_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="secondaryDisinfectReader2" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="4126"/>
+  		<property name="readerName" value="secondaryDisinfectReader2"/>
+  		<property name="readerTargetName" value="sterilestorageReader2" />
+  		<property name="dataTargetName" value="4126" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SECONDARYDISINFECT_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_PACKAGING_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="sterilestorageReader1" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="5026"/>
+  		<property name="readerName" value="sterilestorageReader1"/>
+  		<property name="readerTargetName" value="over" />
+  		<property name="dataTargetName" value="5026" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_STERILESTORAGE_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SECONDARYDISINFECT_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+  	
+  	<bean id="sterilestorageReader2" class="com.hawklithm.bluehawky.sim.reader.SimReader" init-method="initReader">
+  		<property name="register" ref="wardenManager"/>
+  		<property name="pusher" ref="wardenManager"/>
+  		<property name="nettyClient" ref="nettyClient"/>
+  		<property name="readerRfid" value="5126"/>
+  		<property name="readerName" value="sterilestorageReader2"/>
+  		<property name="readerTargetName" value="over" />
+  		<property name="dataTargetName" value="5126" />
+  		<property name="wardenedMessageKindToNext" value="#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_STERILESTORAGE_OVER}"/>
+  		<property name="wardenedMessageKinds" >
+  			<list>
+  				<value>#{T(com.hawklithm.bluehawky.sim.reader.SimReader).MESSAGE_SECONDARYDISINFECT_OVER}</value>
+  			</list>
+  		</property>
+  	</bean>
+</beans>
