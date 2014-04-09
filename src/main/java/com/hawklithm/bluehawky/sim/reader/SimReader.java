@@ -76,13 +76,12 @@ public class SimReader {
 				}
 				String msg=gson.toJson(pacData);
 				try {
-//					sendRFID(msg);
+					sendRFID(msg);
 					Thread.sleep(timeDelay);
 					pushToNext(message);
-//				} catch (MessageTransportException e) {
-//					e.printStackTrace();
+				} catch (MessageTransportException e) {
+					e.printStackTrace();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

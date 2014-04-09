@@ -26,19 +26,47 @@ public class NettyClient {
 	public NettyClient(int port) {
 		this.port = port;
 		this.address = "127.0.0.1";
-//		initClient();
+		this.handler = new NettyHandler() {
+
+			@Override
+			public void onMessageReceived(String message, Channel channel)
+					throws MessageTransportException {
+
+			}
+
+			@Override
+			public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
+					throws Exception {
+				channel = e.getChannel();
+			}
+		};
+		initClient();
 	}
 	public NettyClient(int port,String address,NettyHandler handler){
 		this.port=port;
 		this.address=address;
 		this.handler=handler;
-//		initClient();
+		initClient();
 	}
 
 	public NettyClient(int port, String address) {
 		this.port = port;
 		this.address = address;
-//		initClient();
+		this.handler = new NettyHandler() {
+
+			@Override
+			public void onMessageReceived(String message, Channel channel)
+					throws MessageTransportException {
+
+			}
+
+			@Override
+			public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
+					throws Exception {
+				channel = e.getChannel();
+			}
+		};
+		initClient();
 	}
 
 	public void initClient() {
@@ -48,19 +76,6 @@ public class NettyClient {
 				ChannelPipeline pipeline = Channels.pipeline();
 				pipeline.addLast("UP_FRAME_HANDLER", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 2));
 				pipeline.addLast("DOWN_FRAME_HANDLER", new LengthFieldPrepender(2, false));
-				handler=new NettyHandler() {
-					
-					@Override
-					public void onMessageReceived(String message, Channel channel) throws MessageTransportException {
-						
-					}
-
-					@Override
-					public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
-							throws Exception {
-						channel = e.getChannel();
-					}
-				};
 				pipeline.addLast("myHandler", handler);
 				return pipeline;
 			}

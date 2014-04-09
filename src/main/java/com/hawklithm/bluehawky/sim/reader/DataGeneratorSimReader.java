@@ -22,12 +22,12 @@ public class DataGeneratorSimReader extends SimReader {
 				index.setReaderId(readerRfid);
 		}
 		String msg = gson.toJson(pacData);
-//		try {
-//			sendRFID(msg);
+		try {
+			sendRFID(msg);
 			pushToNext(gson.toJson(data));
-//		} catch (MessageTransportException e) {
-//			e.printStackTrace();
-//		}
+		} catch (MessageTransportException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
