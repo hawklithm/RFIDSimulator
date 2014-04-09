@@ -20,14 +20,21 @@ public class RFIDDataGenerator implements Runnable {
 	@Override
 	public void run() {
 		int counter = 1;
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		while ((counter--) > 0) {
+			System.out.println("生成器启动");
 			SqlRFIDOriginalObject[] datas = new SqlRFIDOriginalObject[dataNumberPerTerm];
 			for (int i = 0; i < dataNumberPerTerm; i++) {
 				datas[i] = new SqlRFIDOriginalObject();
 				datas[i].setDate(new Date());
 				datas[i].setRfid(staticRFID[i%10]);
-//				datas[i].setRfid(random.nextInt(1000000)+1000000);
 			}
+			System.out.println("[generator] 数据已发出");
 			reader.dataSender(datas);
 			try {
 				Thread.sleep(3000);

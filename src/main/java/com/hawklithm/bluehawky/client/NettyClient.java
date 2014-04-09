@@ -26,19 +26,19 @@ public class NettyClient {
 	public NettyClient(int port) {
 		this.port = port;
 		this.address = "127.0.0.1";
-		initClient();
+//		initClient();
 	}
 	public NettyClient(int port,String address,NettyHandler handler){
 		this.port=port;
 		this.address=address;
 		this.handler=handler;
-		initClient();
+//		initClient();
 	}
 
 	public NettyClient(int port, String address) {
 		this.port = port;
 		this.address = address;
-		initClient();
+//		initClient();
 	}
 
 	public void initClient() {

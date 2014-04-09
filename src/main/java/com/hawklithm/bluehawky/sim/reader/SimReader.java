@@ -22,6 +22,9 @@ public class SimReader {
 	 * 接收数据的读卡器模块的RFID
 	 */
 	protected String dataTargetName;
+	
+	protected int timeDelay=5000;
+	
 	protected Integer readerRfid;
 	/**
 	 * 接收本模拟读卡器数据的目标读卡器名称
@@ -34,8 +37,30 @@ public class SimReader {
 	protected String wardenedMessageKindToNext;
 	protected IMessagePusher<WardenMessage> pusher;
 	protected Gson gson=new Gson();
-	public static final String MESSAGE_GATE_OVER="message_gate_over",MESSAGE_SORTTING_OVER="message_sortting_over",MESSAGE_CLEANANDDISINFECT_OVER="message_cleananddisinfect_over",MESSAGE_PACKAGING_OVER="message_packaging_over",MESSAGE_SECONDARYDISINFECT_OVER="message_secondarydisinfect_over",MESSAGE_STERILESTORAGE_OVER="message_sterilestorage_over";
-	public void initReader(){
+	public static final String 
+			MESSAGE_GATE_OVER = "message_gate_over",
+			MESSAGE_SORTING_ENTER="message_sorting_enter",
+			MESSAGE_SORTING_START="message_sorting_start",
+			MESSAGE_SORTING_END="message_sorting_end",
+			MESSAGE_SORTTING_OVER = "message_sortting_over",
+			MESSAGE_CLEANANDDISINFECT_ENTER="message_cleananddisinfect_enter",
+			MESSAGE_CLEANANDDISINFECT_START="message_cleananddisinfect_start",
+			MESSAGE_CLEANANDDISINFECT_END="message_cleananddisinfect_end",
+			MESSAGE_CLEANANDDISINFECT_OVER = "message_cleananddisinfect_over",
+			MESSAGE_PACKAGING_ENTER = "message_packaging_enter",
+			MESSAGE_PACKAGING_START = "message_packaging_start",
+			MESSAGE_PACKAGING_END = "message_packaging_end",
+			MESSAGE_PACKAGING_OVER = "message_packaging_over",
+			MESSAGE_SECONDARYDISINFECT_ENTER = "message_secondarydisinfect_enter",
+			MESSAGE_SECONDARYDISINFECT_START = "message_secondarydisinfect_start",
+			MESSAGE_SECONDARYDISINFECT_END = "message_secondarydisinfect_end",
+			MESSAGE_SECONDARYDISINFECT_OVER = "message_secondarydisinfect_over",
+			MESSAGE_STERILESTORAGE_ENTER = "message_sterilestorage_enter",
+			MESSAGE_STERILESTORAGE_START = "message_sterilestorage_start",
+			MESSAGE_STERILESTORAGE_END = "message_sterilestorage_end",
+			MESSAGE_STERILESTORAGE_OVER = "message_sterilestorage_over";
+
+	public void initReader() {
 		System.out.println("readerName:"+readerName+", kinds: "+gson.toJson(wardenedMessageKinds));
 		if (!register.regist(new Warden(readerName, wardenedMessageKinds){
 
@@ -51,9 +76,13 @@ public class SimReader {
 				}
 				String msg=gson.toJson(pacData);
 				try {
-					sendRFID(msg);
+//					sendRFID(msg);
+					Thread.sleep(timeDelay);
 					pushToNext(message);
-				} catch (MessageTransportException e) {
+//				} catch (MessageTransportException e) {
+//					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -134,6 +163,12 @@ public class SimReader {
 	}
 	public void setReaderRfid(Integer readerRfid) {
 		this.readerRfid = readerRfid;
+	}
+	public int getTimeDelay() {
+		return timeDelay;
+	}
+	public void setTimeDelay(int timeDelay) {
+		this.timeDelay = timeDelay;
 	}
 
 }
